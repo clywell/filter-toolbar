@@ -1,0 +1,519 @@
+/* 
+ * @clywell/filter-toolbar - Default CSS Variables
+ * 
+ * This file provides default styling for the filter toolbar components.
+ * You can:
+ * 1. Import this file for default styling: import '@clywell/filter-toolbar/styles.css'
+ * 2. Override any CSS variable in your own CSS
+ * 3. Skip this file entirely and provide your own styling
+ */
+
+:root {
+    /* Colors */
+    --filter-primary: #3b82f6;
+    --filter-primary-foreground: #ffffff;
+    --filter-secondary: #f1f5f9;
+    --filter-secondary-foreground: #0f172a;
+    --filter-muted: #64748b;
+    --filter-muted-foreground: #94a3b8;
+    --filter-accent: #f8fafc;
+    --filter-accent-foreground: #0f172a;
+    --filter-destructive: #ef4444;
+    --filter-destructive-foreground: #ffffff;
+    --filter-border: #e2e8f0;
+    --filter-input: #e2e8f0;
+    --filter-background: #ffffff;
+    --filter-foreground: #0f172a;
+    --filter-ring: #3b82f6;
+
+    /* Spacing */
+    --filter-spacing-xs: 0.25rem;
+    /* 4px */
+    --filter-spacing-sm: 0.5rem;
+    /* 8px */
+    --filter-spacing-md: 0.75rem;
+    /* 12px */
+    --filter-spacing-lg: 1rem;
+    /* 16px */
+    --filter-spacing-xl: 1.5rem;
+    /* 24px */
+
+    /* Border radius */
+    --filter-radius-sm: 0.375rem;
+    /* 6px */
+    --filter-radius-md: 0.5rem;
+    /* 8px */
+    --filter-radius-lg: 0.75rem;
+    /* 12px */
+
+    /* Shadows */
+    --filter-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --filter-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --filter-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+    /* Typography */
+    --filter-font-size-xs: 0.75rem;
+    /* 12px */
+    --filter-font-size-sm: 0.875rem;
+    /* 14px */
+    --filter-font-size-md: 1rem;
+    /* 16px */
+    --filter-font-size-lg: 1.125rem;
+    /* 18px */
+
+    /* Component heights */
+    --filter-height-sm: 2rem;
+    /* 32px */
+    --filter-height-md: 2.25rem;
+    /* 36px */
+    --filter-height-lg: 2.5rem;
+    /* 40px */
+
+    /* Z-index */
+    --filter-z-dropdown: 50;
+    --filter-z-modal: 50;
+    --filter-z-overlay: 40;
+
+    /* Transitions */
+    --filter-transition: all 0.2s ease-in-out;
+}
+
+/* Base component styles */
+
+/* Button */
+.filter-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--filter-radius-md);
+    font-weight: 500;
+    transition: var(--filter-transition);
+    border: 1px solid transparent;
+    cursor: pointer;
+    outline: none;
+}
+
+.filter-button:focus-visible {
+    outline: 2px solid var(--filter-ring);
+    outline-offset: 2px;
+}
+
+.filter-button:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.filter-button--size-sm {
+    height: var(--filter-height-sm);
+    padding: 0 var(--filter-spacing-md);
+    font-size: var(--filter-font-size-xs);
+}
+
+.filter-button--size-md {
+    height: var(--filter-height-md);
+    padding: 0 var(--filter-spacing-lg);
+    font-size: var(--filter-font-size-sm);
+}
+
+.filter-button--size-lg {
+    height: var(--filter-height-lg);
+    padding: 0 var(--filter-spacing-xl);
+    font-size: var(--filter-font-size-md);
+}
+
+.filter-button--variant-default {
+    background-color: var(--filter-primary);
+    color: var(--filter-primary-foreground);
+    box-shadow: var(--filter-shadow-sm);
+}
+
+.filter-button--variant-default:hover {
+    background-color: color-mix(in srgb, var(--filter-primary) 90%, black);
+}
+
+.filter-button--variant-secondary {
+    background-color: var(--filter-secondary);
+    color: var(--filter-secondary-foreground);
+    box-shadow: var(--filter-shadow-sm);
+}
+
+.filter-button--variant-secondary:hover {
+    background-color: color-mix(in srgb, var(--filter-secondary) 80%, black);
+}
+
+.filter-button--variant-ghost {
+    background-color: transparent;
+    color: var(--filter-foreground);
+}
+
+.filter-button--variant-ghost:hover {
+    background-color: var(--filter-accent);
+    color: var(--filter-accent-foreground);
+}
+
+.filter-button--variant-destructive {
+    background-color: var(--filter-destructive);
+    color: var(--filter-destructive-foreground);
+    box-shadow: var(--filter-shadow-sm);
+}
+
+.filter-button--variant-destructive:hover {
+    background-color: color-mix(in srgb, var(--filter-destructive) 90%, black);
+}
+
+/* Input */
+.filter-input {
+    display: flex;
+    height: var(--filter-height-md);
+    width: 100%;
+    border-radius: var(--filter-radius-md);
+    border: 1px solid var(--filter-input);
+    background-color: transparent;
+    padding: 0 var(--filter-spacing-md);
+    font-size: var(--filter-font-size-sm);
+    box-shadow: var(--filter-shadow-sm);
+    transition: var(--filter-transition);
+}
+
+.filter-input::placeholder {
+    color: var(--filter-muted-foreground);
+}
+
+.filter-input:focus-visible {
+    outline: none;
+    border-color: var(--filter-ring);
+    box-shadow: 0 0 0 1px var(--filter-ring);
+}
+
+.filter-input:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+/* Badge */
+.filter-badge {
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--filter-radius-md);
+    border: 1px solid var(--filter-border);
+    padding: var(--filter-spacing-xs) var(--filter-spacing-sm);
+    font-size: var(--filter-font-size-xs);
+    font-weight: 600;
+    transition: var(--filter-transition);
+    cursor: pointer;
+}
+
+.filter-badge:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--filter-ring);
+}
+
+.filter-badge--variant-default {
+    background-color: var(--filter-primary);
+    color: var(--filter-primary-foreground);
+}
+
+.filter-badge--variant-default:hover {
+    background-color: color-mix(in srgb, var(--filter-primary) 80%, black);
+}
+
+.filter-badge--variant-secondary {
+    background-color: var(--filter-secondary);
+    color: var(--filter-secondary-foreground);
+}
+
+.filter-badge--variant-secondary:hover {
+    background-color: color-mix(in srgb, var(--filter-secondary) 80%, black);
+}
+
+.filter-badge--variant-destructive {
+    background-color: var(--filter-destructive);
+    color: var(--filter-destructive-foreground);
+}
+
+.filter-badge--variant-destructive:hover {
+    background-color: color-mix(in srgb, var(--filter-destructive) 80%, black);
+}
+
+.filter-badge--variant-outline {
+    color: var(--filter-foreground);
+    border-color: var(--filter-input);
+    background-color: var(--filter-background);
+}
+
+.filter-badge--variant-outline:hover {
+    background-color: var(--filter-accent);
+    color: var(--filter-accent-foreground);
+}
+
+/* Dropdown */
+.filter-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-dropdown__content {
+    position: absolute;
+    z-index: var(--filter-z-dropdown);
+    min-width: 8rem;
+    background-color: var(--filter-background);
+    border: 1px solid var(--filter-border);
+    border-radius: var(--filter-radius-md);
+    box-shadow: var(--filter-shadow-lg);
+    padding: var(--filter-spacing-xs) 0;
+}
+
+.filter-dropdown__item {
+    width: 100%;
+    text-align: left;
+    padding: var(--filter-spacing-sm) var(--filter-spacing-md);
+    font-size: var(--filter-font-size-sm);
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: var(--filter-transition);
+    color: var(--filter-foreground);
+}
+
+.filter-dropdown__item:hover {
+    background-color: var(--filter-accent);
+    color: var(--filter-accent-foreground);
+}
+
+.filter-dropdown__item:focus {
+    outline: none;
+    background-color: var(--filter-accent);
+    color: var(--filter-accent-foreground);
+}
+
+.filter-dropdown__item--disabled {
+    color: var(--filter-muted-foreground);
+    cursor: not-allowed;
+}
+
+.filter-dropdown__empty {
+    padding: var(--filter-spacing-sm) var(--filter-spacing-md);
+    font-size: var(--filter-font-size-sm);
+    color: var(--filter-muted-foreground);
+}
+
+.filter-dropdown__item-label {
+    font-weight: 500;
+}
+
+.filter-dropdown__item-category {
+    font-size: var(--filter-font-size-xs);
+    color: var(--filter-muted-foreground);
+    text-transform: capitalize;
+}
+
+.filter-dropdown__icon {
+    height: 0.75rem;
+    width: 0.75rem;
+}
+
+.filter-button--add-filter {
+    gap: var(--filter-spacing-sm);
+    box-shadow: var(--filter-shadow-sm);
+    border: 1px solid var(--filter-border);
+}
+
+/* Sheet/Modal */
+.filter-sheet-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: var(--filter-z-overlay);
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: flex-end;
+}
+
+.filter-sheet {
+    background-color: var(--filter-background);
+    width: 100%;
+    height: 85vh;
+    border-radius: var(--filter-radius-lg) var(--filter-radius-lg) 0 0;
+}
+
+.filter-sheet__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.filter-sheet__header {
+    padding: var(--filter-spacing-xl) var(--filter-spacing-xl) var(--filter-spacing-lg);
+    border-bottom: 1px solid var(--filter-border);
+}
+
+.filter-sheet__title {
+    font-size: var(--filter-font-size-lg);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Toolbar */
+.filter-toolbar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-spacing-lg);
+}
+
+.filter-toolbar__desktop {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-spacing-lg);
+}
+
+.filter-toolbar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.filter-toolbar__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--filter-spacing-xs);
+}
+
+.filter-toolbar__clear-all {
+    height: 1.75rem;
+    padding: 0 var(--filter-spacing-sm);
+    font-size: var(--filter-font-size-xs);
+    color: var(--filter-muted-foreground);
+}
+
+.filter-toolbar__clear-all:hover {
+    color: var(--filter-destructive);
+    background-color: color-mix(in srgb, var(--filter-destructive) 10%, transparent);
+}
+
+.filter-toolbar__mobile-trigger {
+    width: 100%;
+    justify-content: center;
+    gap: var(--filter-spacing-sm);
+    box-shadow: var(--filter-shadow-sm);
+    border: 1px solid var(--filter-border);
+}
+
+/* Sheet/Modal Extensions */
+.filter-sheet__mobile {
+    height: 85vh;
+    padding: 0;
+}
+
+.filter-sheet__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--filter-spacing-xl) var(--filter-spacing-xl) var(--filter-spacing-lg);
+}
+
+.filter-sheet__sections {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-spacing-xl);
+}
+
+.filter-sheet__section-title {
+    font-size: var(--filter-font-size-sm);
+    font-weight: 500;
+    margin-bottom: var(--filter-spacing-md);
+}
+
+.filter-sheet__section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--filter-spacing-md);
+}
+
+.filter-sheet__active-filters {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-spacing-md);
+}
+
+.filter-sheet__filter-item {
+    width: 100%;
+}
+
+/* Active filter chip */
+.filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--filter-spacing-xs);
+}
+
+.filter-chip--full-width {
+    width: 100%;
+}
+
+.filter-chip__badge {
+    cursor: pointer;
+    transition: var(--filter-transition);
+    gap: var(--filter-spacing-xs);
+    height: auto;
+    padding: var(--filter-spacing-xs) var(--filter-spacing-sm);
+}
+
+.filter-chip__badge:hover {
+    background-color: var(--filter-accent);
+}
+
+.filter-chip__badge--full-width {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.filter-chip__badge--compact {
+    font-size: var(--filter-font-size-xs);
+    padding: var(--filter-spacing-xs);
+}
+
+.filter-chip__content {
+    display: flex;
+    align-items: center;
+    gap: var(--filter-spacing-xs);
+}
+
+.filter-chip__label {
+    font-weight: 500;
+}
+
+.filter-chip__value {
+    max-width: 8rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.filter-chip__remove {
+    margin-left: var(--filter-spacing-xs);
+    height: 1.5rem;
+    width: 1.5rem;
+    padding: 0;
+}
+
+.filter-chip__remove:hover {
+    background-color: color-mix(in srgb, var(--filter-destructive) 10%, transparent);
+    color: var(--filter-destructive);
+}
+
+.filter-chip__icon {
+    height: 0.75rem;
+    width: 0.75rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--filter-spacing-md);
+    }
+
+    .filter-toolbar__filters {
+        width: 100%;
+    }
+}

@@ -1,0 +1,100 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version type (patch, minor, major)'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+      prerelease:
+        description: 'Is this a pre-release?'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Run tests
+      run: |
+        npm run type-check
+        npm run lint
+        npm test
+        npm run build
+        
+    - name: Configure Git
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        
+    - name: Bump version
+      id: version
+      run: |
+        NEW_VERSION=$(npm version ${{ github.event.inputs.version }} --no-git-tag-version)
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+        echo "version_number=${NEW_VERSION#v}" >> $GITHUB_OUTPUT
+        
+    - name: Update CHANGELOG
+      run: |
+        echo "# Changelog" > CHANGELOG.temp
+        echo "" >> CHANGELOG.temp
+        echo "## [${{ steps.version.outputs.version_number }}] - $(date +%Y-%m-%d)" >> CHANGELOG.temp
+        echo "" >> CHANGELOG.temp
+        echo "### Added" >> CHANGELOG.temp
+        echo "- Version ${{ steps.version.outputs.version_number }} release" >> CHANGELOG.temp
+        echo "" >> CHANGELOG.temp
+        if [ -f CHANGELOG.md ]; then
+          tail -n +2 CHANGELOG.md >> CHANGELOG.temp
+        fi
+        mv CHANGELOG.temp CHANGELOG.md
+        
+    - name: Commit changes
+      run: |
+        git add package.json package-lock.json CHANGELOG.md
+        git commit -m "chore: bump version to ${{ steps.version.outputs.new_version }}"
+        git tag ${{ steps.version.outputs.new_version }}
+        
+    - name: Push changes
+      run: |
+        git push origin ${{ github.ref_name }}
+        git push origin ${{ steps.version.outputs.new_version }}
+        
+    - name: Create GitHub Release
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const { data: release } = await github.rest.repos.createRelease({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            tag_name: '${{ steps.version.outputs.new_version }}',
+            name: 'Release ${{ steps.version.outputs.new_version }}',
+            body: `## What's Changed\n\n- Version ${{ steps.version.outputs.version_number }} release\n\n**Full Changelog**: https://github.com/${context.repo.owner}/${context.repo.repo}/compare/v1.0.0...${{ steps.version.outputs.new_version }}`,
+            draft: false,
+            prerelease: ${{ github.event.inputs.prerelease }}
+          });
+          
+          core.info(`Release created: ${release.html_url}`);

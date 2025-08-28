@@ -1,0 +1,78 @@
+/* 
+ * Custom styling for filter toolbar
+ * This file shows how to customize the default styles using CSS variables
+ */
+
+:root {
+    /* Brand colors */
+    --filter-primary: #6366f1;
+    /* indigo-500 */
+    --filter-primary-foreground: #ffffff;
+
+    /* Custom spacing for a more compact design */
+    --filter-spacing-sm: 0.375rem;
+    /* 6px */
+    --filter-spacing-md: 0.625rem;
+    /* 10px */
+
+    /* Rounded design */
+    --filter-radius-md: 0.75rem;
+    /* 12px */
+    --filter-radius-lg: 1rem;
+    /* 16px */
+
+    /* Custom shadows */
+    --filter-shadow-md: 0 8px 25px -8px rgba(99, 102, 241, 0.3);
+}
+
+/* Custom component styling */
+.example-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.results {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: #f8fafc;
+    border-radius: 0.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.results h3 {
+    margin: 0 0 1rem 0;
+    color: #374151;
+}
+
+.results pre {
+    background: #1f2937;
+    color: #f9fafb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-size: 0.875rem;
+}
+
+/* Dark mode example */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --filter-background: #1f2937;
+        --filter-foreground: #f9fafb;
+        --filter-border: #374151;
+        --filter-secondary: #374151;
+        --filter-secondary-foreground: #f9fafb;
+        --filter-accent: #374151;
+    }
+
+    .example-container {
+        background: #111827;
+        color: #f9fafb;
+    }
+
+    .results {
+        background: #374151;
+        border-color: #4b5563;
+    }
+}
