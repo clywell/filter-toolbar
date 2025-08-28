@@ -25,7 +25,7 @@ export function createLocalStorageAdapter(storageKey: string = 'filter-toolbar-f
             const filters: ActiveFilter[] = [];
 
             if (Array.isArray(parsed)) {
-                parsed.forEach((item: any) => {
+                parsed.forEach((item: { key: string; encodedValue: string }) => {
                     const definition = availableFilters.find(f => f.key === item.key);
                     if (definition) {
                         const decodedValue = decodeFilterValue(item.encodedValue, definition.type);
@@ -42,8 +42,8 @@ export function createLocalStorageAdapter(storageKey: string = 'filter-toolbar-f
             }
 
             return filters;
-        } catch (error) {
-            console.warn('Failed to load filters from localStorage:', error);
+        } catch (_error) {
+            // Failed to load filters from localStorage - return empty array
             return [];
         }
     }
@@ -56,8 +56,8 @@ export function createLocalStorageAdapter(storageKey: string = 'filter-toolbar-f
                     encodedValue: encodeFilterValue(filter.value)
                 }));
                 localStorage.setItem(storageKey, JSON.stringify(toStore));
-            } catch (error) {
-                console.warn('Failed to save filters to localStorage:', error);
+            } catch (_error) {
+                // Failed to save filters to localStorage - continue silently
             }
         },
 
@@ -68,8 +68,8 @@ export function createLocalStorageAdapter(storageKey: string = 'filter-toolbar-f
         clearFilters: () => {
             try {
                 localStorage.removeItem(storageKey);
-            } catch (error) {
-                console.warn('Failed to clear filters from localStorage:', error);
+            } catch (_error) {
+                // Failed to clear filters from localStorage - continue silently
             }
         }
     };
@@ -86,7 +86,7 @@ export function createMemoryAdapter(): PersistenceAdapter {
             memoryFilters = [...filters];
         },
 
-        loadFilters: (availableFilters: FilterDefinition[]) => {
+        loadFilters: (_availableFilters: FilterDefinition[]) => {
             return [...memoryFilters];
         },
 

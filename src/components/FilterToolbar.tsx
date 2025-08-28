@@ -1,5 +1,5 @@
 import React from 'react';
-import type { FilterToolbarProps } from '../core/types';
+import type { FilterToolbarProps, FilterDefinition } from '../core/types';
 import { FilterDropdown } from './FilterDropdown';
 import { ActiveFilterComponent } from './ActiveFilterComponent';
 import { Button } from './ui/basic';
@@ -20,7 +20,7 @@ const useIsMobile = () => {
 
 // Default Sheet components - users should override these
 const DefaultSheet: React.FC<{ open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }> =
-    ({ open, children, onOpenChange }) => {
+    ({ open, children, onOpenChange: _onOpenChange }) => {
         if (!open) return null;
         return (
             <div className="filter-sheet-overlay">
@@ -51,7 +51,7 @@ export function FilterToolbar({
     availableFilters,
     activeFilters,
     onAddFilter,
-    onUpdateFilter,
+    onUpdateFilter: _onUpdateFilter,
     onRemoveFilter,
     onClearAll,
     hasActiveFilters,
@@ -75,10 +75,9 @@ export function FilterToolbar({
     const ButtonComponent = components.Button || Button;
 
     // Memoize the callback functions to prevent recreation on every render
-    const memoizedOnUpdateFilter = React.useCallback(onUpdateFilter, [onUpdateFilter]);
     const memoizedOnRemoveFilter = React.useCallback(onRemoveFilter, [onRemoveFilter]);
 
-    const handleAddFilter = (definition: any) => {
+    const handleAddFilter = (definition: FilterDefinition) => {
         onAddFilter(definition);
         // Set the last added filter to auto-open (we'll identify it by key since we don't have ID yet)
         setLastAddedFilterId(definition.key);

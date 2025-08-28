@@ -7,8 +7,8 @@ export * from './core/utils';
 export { FilterToolbar } from './components/FilterToolbar';
 export { FilterDropdown } from './components/FilterDropdown';
 
-// Basic UI components
-export * from './components/ui/basic';
+// Basic UI components (avoiding conflicts with type exports)
+export { Button, Input, Badge } from './components/ui/basic';
 
 // Adapter exports
 export { createNextJSAdapter } from './adapters/nextjs';

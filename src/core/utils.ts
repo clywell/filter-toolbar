@@ -95,9 +95,6 @@ export function getDisplayValue(definition: FilterDefinition, value: unknown): s
             }
             return '';
 
-        case 'boolean':
-            return value ? 'Yes' : 'No';
-
         default:
             return value.toString();
     }

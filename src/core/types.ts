@@ -108,6 +108,132 @@ export interface FilterBuilderProps {
     onRemoveFilter: (filterId: string) => void;
 }
 
+// Component prop interfaces
+export interface ButtonProps {
+    children: React.ReactNode;
+    onClick?: () => void;
+    disabled?: boolean;
+    variant?: string;
+    size?: string;
+    className?: string;
+}
+
+export interface SheetProps {
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    children: React.ReactNode;
+}
+
+export interface SheetContentProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+export interface SheetHeaderProps {
+    children: React.ReactNode;
+}
+
+export interface SheetTitleProps {
+    children: React.ReactNode;
+}
+
+export interface SheetTriggerProps {
+    children: React.ReactNode;
+    asChild?: boolean;
+}
+
+export interface BadgeProps {
+    children: React.ReactNode;
+    variant?: string;
+    className?: string;
+}
+
+export interface PopoverProps {
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
+    children: React.ReactNode;
+}
+
+export interface PopoverContentProps {
+    children: React.ReactNode;
+    align?: string;
+    side?: string;
+    className?: string;
+}
+
+export interface PopoverTriggerProps {
+    children: React.ReactNode;
+    asChild?: boolean;
+}
+
+export interface InputProps {
+    value?: string | number;
+    onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    type?: string;
+    placeholder?: string;
+    className?: string;
+    min?: number;
+    max?: number;
+    step?: number;
+}
+
+export interface SelectProps {
+    value?: string;
+    onValueChange?: (value: string) => void;
+    children: React.ReactNode;
+    multiple?: boolean;
+}
+
+export interface SelectContentProps {
+    children: React.ReactNode;
+}
+
+export interface SelectItemProps {
+    value: string;
+    children: React.ReactNode;
+}
+
+export interface SelectTriggerProps {
+    children: React.ReactNode;
+    className?: string;
+}
+
+export interface SelectValueProps {
+    placeholder?: string;
+}
+
+export interface CalendarProps {
+    mode?: string;
+    selected?: Date | Date[];
+    onSelect?: (date: Date | Date[] | undefined) => void;
+    className?: string;
+}
+
+export interface SwitchProps {
+    checked?: boolean;
+    onCheckedChange?: (checked: boolean) => void;
+    className?: string;
+}
+
+export interface DropdownMenuProps {
+    children: React.ReactNode;
+}
+
+export interface DropdownMenuContentProps {
+    children: React.ReactNode;
+    align?: string;
+}
+
+export interface DropdownMenuItemProps {
+    children: React.ReactNode;
+    onClick?: () => void;
+}
+
+export interface DropdownMenuTriggerProps {
+    children: React.ReactNode;
+    asChild?: boolean;
+}
+
 export interface FilterToolbarProps {
     availableFilters: FilterDefinition[];
     activeFilters: ActiveFilter[];
@@ -121,12 +247,12 @@ export interface FilterToolbarProps {
     isMobile?: boolean;
     // Component customization
     components?: {
-        Button?: React.ComponentType<any>;
-        Sheet?: React.ComponentType<any>;
-        SheetContent?: React.ComponentType<any>;
-        SheetHeader?: React.ComponentType<any>;
-        SheetTitle?: React.ComponentType<any>;
-        SheetTrigger?: React.ComponentType<any>;
+        Button?: React.ComponentType<ButtonProps>;
+        Sheet?: React.ComponentType<SheetProps>;
+        SheetContent?: React.ComponentType<SheetContentProps>;
+        SheetHeader?: React.ComponentType<SheetHeaderProps>;
+        SheetTitle?: React.ComponentType<SheetTitleProps>;
+        SheetTrigger?: React.ComponentType<SheetTriggerProps>;
     };
 }
 
@@ -139,11 +265,11 @@ export interface FilterChipProps {
     autoOpen?: boolean;
     // Component customization
     components?: {
-        Button?: React.ComponentType<any>;
-        Badge?: React.ComponentType<any>;
-        Popover?: React.ComponentType<any>;
-        PopoverContent?: React.ComponentType<any>;
-        PopoverTrigger?: React.ComponentType<any>;
+        Button?: React.ComponentType<ButtonProps>;
+        Badge?: React.ComponentType<BadgeProps>;
+        Popover?: React.ComponentType<PopoverProps>;
+        PopoverContent?: React.ComponentType<PopoverContentProps>;
+        PopoverTrigger?: React.ComponentType<PopoverTriggerProps>;
     };
 }
 
@@ -154,18 +280,18 @@ export interface FilterValueInputProps {
     lookupFunction?: LookupFunction;
     // Component customization
     components?: {
-        Input?: React.ComponentType<any>;
-        Select?: React.ComponentType<any>;
-        SelectContent?: React.ComponentType<any>;
-        SelectItem?: React.ComponentType<any>;
-        SelectTrigger?: React.ComponentType<any>;
-        SelectValue?: React.ComponentType<any>;
-        Switch?: React.ComponentType<any>;
-        Calendar?: React.ComponentType<any>;
-        Popover?: React.ComponentType<any>;
-        PopoverContent?: React.ComponentType<any>;
-        PopoverTrigger?: React.ComponentType<any>;
-        Button?: React.ComponentType<any>;
+        Input?: React.ComponentType<InputProps>;
+        Select?: React.ComponentType<SelectProps>;
+        SelectContent?: React.ComponentType<SelectContentProps>;
+        SelectItem?: React.ComponentType<SelectItemProps>;
+        SelectTrigger?: React.ComponentType<SelectTriggerProps>;
+        SelectValue?: React.ComponentType<SelectValueProps>;
+        Switch?: React.ComponentType<SwitchProps>;
+        Calendar?: React.ComponentType<CalendarProps>;
+        Popover?: React.ComponentType<PopoverProps>;
+        PopoverContent?: React.ComponentType<PopoverContentProps>;
+        PopoverTrigger?: React.ComponentType<PopoverTriggerProps>;
+        Button?: React.ComponentType<ButtonProps>;
     };
 }
 
@@ -175,10 +301,10 @@ export interface FilterDropdownProps {
     onAddFilter: (definition: FilterDefinition) => void;
     // Component customization
     components?: {
-        Button?: React.ComponentType<any>;
-        DropdownMenu?: React.ComponentType<any>;
-        DropdownMenuContent?: React.ComponentType<any>;
-        DropdownMenuItem?: React.ComponentType<any>;
-        DropdownMenuTrigger?: React.ComponentType<any>;
+        Button?: React.ComponentType<ButtonProps>;
+        DropdownMenu?: React.ComponentType<DropdownMenuProps>;
+        DropdownMenuContent?: React.ComponentType<DropdownMenuContentProps>;
+        DropdownMenuItem?: React.ComponentType<DropdownMenuItemProps>;
+        DropdownMenuTrigger?: React.ComponentType<DropdownMenuTriggerProps>;
     };
 }

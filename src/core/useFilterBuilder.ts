@@ -2,16 +2,13 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import type {
     FilterDefinition,
     ActiveFilter,
-    FilterQuery,
     UseFilterBuilderOptions,
-    UseFilterBuilderReturn,
-    PersistenceAdapter
+    UseFilterBuilderReturn
 } from './types';
 import {
     generateId,
     getDefaultValue,
     getDisplayValue,
-    isValidFilterValue,
     buildQueryFromFilters
 } from './utils';
 
@@ -25,7 +22,7 @@ export function useFilterBuilder(options: UseFilterBuilderOptions): UseFilterBui
         onQueryChange,
         initialFilters = [],
         persistenceAdapter,
-        lookupFunction
+        lookupFunction: _lookupFunction
     } = options;
 
     // Initialize filters with persistence
@@ -37,8 +34,8 @@ export function useFilterBuilder(options: UseFilterBuilderOptions): UseFilterBui
                 if (persistedFilters.length > 0) {
                     return persistedFilters;
                 }
-            } catch (error) {
-                console.warn('Failed to load persisted filters:', error);
+            } catch (_error) {
+                // Failed to load persisted filters, fall back to initial filters
             }
         }
 
@@ -69,8 +66,8 @@ export function useFilterBuilder(options: UseFilterBuilderOptions): UseFilterBui
             } else {
                 persistenceAdapter.clearFilters();
             }
-        } catch (error) {
-            console.warn('Failed to persist filters:', error);
+        } catch (_error) {
+            // Failed to persist filters - continue silently
         }
     }, [activeFilters, persistenceAdapter, isInitialized]);
 
