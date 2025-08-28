@@ -8,6 +8,11 @@ on:
   release:
     types: [ published ]
 
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
 jobs:
   # Job 1: Run tests and build
   test-and-build:
