@@ -1,6 +1,6 @@
 {
   "name": "@clywell/filter-toolbar",
-  "version": "1.0.1",
+  "version": "0.0.1",
   "description": "A flexible and powerful React filter system with framework adapters for Next.js, React Router, and more",
   "type": "module",
   "main": "dist/index.js",
