@@ -258,7 +258,7 @@ export interface FilterToolbarProps {
 
 export interface FilterChipProps {
     filter: ActiveFilter;
-    onEdit?: () => void;
+    onEdit?: (newValue: unknown) => void;
     onRemove: () => void;
     compact?: boolean;
     fullWidth?: boolean;

@@ -1,91 +1,69 @@
-# Basic React Example
+# React + TypeScript + Vite
 
-This example demonstrates how to use `@clywell/filter-toolbar` in a basic React application with localStorage persistence.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Features Demonstrated
+Currently, two official plugins are available:
 
-- ✅ Multiple filter types (text, select, date range, number range)
-- ✅ LocalStorage persistence
-- ✅ Custom styling with CSS variables
-- ✅ Simulated data filtering
-- ✅ Mobile responsive design
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Getting Started
+## Expanding the ESLint configuration
 
-1. **Install dependencies**
-   ```bash
-   npm install
-   ```
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
 
-2. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-3. **Open in browser**
-   Navigate to `http://localhost:5173`
-
-## Project Structure
-
-```
-src/
-├── App.tsx          # Main application component
-├── index.tsx        # React DOM entry point
-├── data.ts          # Mock data
-└── styles.css       # Custom styling
-```
-
-## Key Implementation Details
-
-### Filter Setup
-```tsx
-const availableFilters: FilterDefinition[] = [
+```js
+export default tseslint.config([
+  globalIgnores(['dist']),
   {
-    key: 'search',
-    label: 'Search',
-    type: 'text'
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      ...tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      ...tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      ...tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
   },
+])
+```
+
+You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
+
+export default tseslint.config([
+  globalIgnores(['dist']),
   {
-    key: 'status',
-    label: 'Status',
-    type: 'select',
-    options: [
-      { value: 'active', label: 'Active' },
-      { value: 'inactive', label: 'Inactive' }
-    ]
-  }
-  // ... more filters
-];
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 ```
-
-### Persistence
-```tsx
-const persistenceAdapter = createLocalStorageAdapter('example-filters');
-```
-
-### Data Filtering
-The example shows how to apply filters to your data:
-
-```tsx
-const filteredData = useMemo(() => {
-  return applyFilters(mockData, filterBuilder.query);
-}, [filterBuilder.query]);
-```
-
-## Customization
-
-The example includes custom CSS variables to demonstrate styling:
-
-```css
-:root {
-  --filter-primary: #2563eb;
-  --filter-border: #e5e7eb;
-  --filter-radius-md: 0.75rem;
-}
-```
-
-## Learn More
-
-- [Main Documentation](../../README.md)
-- [Styling Guide](../../STYLING.md)
-- [API Reference](../../README.md#api-reference)

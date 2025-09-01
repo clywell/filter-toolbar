@@ -6,6 +6,7 @@ export * from './core/utils';
 // Component exports
 export { FilterToolbar } from './components/FilterToolbar';
 export { FilterDropdown } from './components/FilterDropdown';
+export { FilterValueInput } from './components/FilterValueInput';
 
 // Basic UI components (avoiding conflicts with type exports)
 export { Button, Input, Badge } from './components/ui/basic';

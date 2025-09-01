@@ -357,12 +357,14 @@
     display: flex;
     flex-direction: column;
     gap: var(--filter-spacing-lg);
+    overflow: visible;
 }
 
 .filter-toolbar__desktop {
     display: flex;
     flex-direction: column;
     gap: var(--filter-spacing-lg);
+    overflow: visible;
 }
 
 .filter-toolbar__header {
@@ -375,6 +377,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: var(--filter-spacing-xs);
+    overflow: visible;
 }
 
 .filter-toolbar__clear-all {
@@ -443,6 +446,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--filter-spacing-xs);
+    position: relative;
+    overflow: visible;
 }
 
 .filter-chip--full-width {
@@ -516,4 +521,193 @@
     .filter-toolbar__filters {
         width: 100%;
     }
+}
+
+/* Popover */
+.filter-popover {
+    position: relative;
+    display: inline-block;
+}
+
+.filter-popover__trigger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.filter-popover__content {
+    position: absolute;
+    z-index: 1000;
+    min-width: 16rem;
+    max-width: 24rem;
+    width: max-content;
+    background-color: var(--filter-background);
+    border: 1px solid var(--filter-border);
+    border-radius: var(--filter-radius-md);
+    box-shadow: var(--filter-shadow-lg);
+    padding: var(--filter-spacing-md);
+    /* Ensure popover appears above other content */
+    transform: translateY(0);
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.filter-popover__content--bottom {
+    top: 100%;
+    margin-top: var(--filter-spacing-xs);
+}
+
+.filter-popover__content--top {
+    bottom: 100%;
+    margin-bottom: var(--filter-spacing-xs);
+}
+
+.filter-popover__content--left {
+    right: 100%;
+    margin-right: var(--filter-spacing-xs);
+}
+
+.filter-popover__content--right {
+    left: 100%;
+    margin-left: var(--filter-spacing-xs);
+}
+
+.filter-popover__content--start {
+    left: 0;
+}
+
+.filter-popover__content--center {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.filter-popover__content--end {
+    right: 0;
+}
+
+/* Filter specific styles */
+.filter-select,
+.filter-multi-select {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.filter-select .filter-button,
+.filter-multi-select .filter-button {
+    margin-bottom: var(--filter-spacing-xs);
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Range filter specific styles */
+.filter-range {
+    display: flex;
+    flex-direction: column;
+    gap: var(--filter-spacing-sm);
+    min-width: 0;
+}
+
+.filter-range__row {
+    display: flex;
+    align-items: center;
+    gap: var(--filter-spacing-sm);
+    min-width: 0;
+}
+
+.filter-range__label {
+    font-size: var(--filter-font-size-sm);
+    font-weight: 500;
+    color: var(--filter-foreground);
+    white-space: nowrap;
+    min-width: 2rem;
+}
+
+.filter-range__input {
+    flex: 1;
+    min-width: 0;
+    width: 6rem;
+    padding: var(--filter-spacing-xs) var(--filter-spacing-sm);
+    border: 1px solid var(--filter-border);
+    border-radius: var(--filter-radius-sm);
+    font-size: var(--filter-font-size-sm);
+    background-color: var(--filter-background);
+    color: var(--filter-foreground);
+    box-sizing: border-box;
+}
+
+.filter-range__input:focus {
+    outline: none;
+    border-color: var(--filter-primary);
+    box-shadow: 0 0 0 1px var(--filter-primary);
+}
+
+/* Text and Number input specific styles */
+.filter-text-input,
+.filter-number-input {
+    width: 100%;
+    padding: var(--filter-spacing-xs) var(--filter-spacing-sm);
+    border: 1px solid var(--filter-border);
+    border-radius: var(--filter-radius-sm);
+    font-size: var(--filter-font-size-sm);
+    background-color: var(--filter-background);
+    color: var(--filter-foreground);
+    box-sizing: border-box;
+}
+
+.filter-text-input:focus,
+.filter-number-input:focus {
+    outline: none;
+    border-color: var(--filter-primary);
+    box-shadow: 0 0 0 1px var(--filter-primary);
+}
+
+.space-y-1>*+* {
+    margin-top: var(--filter-spacing-xs);
+}
+
+.space-y-2>*+* {
+    margin-top: var(--filter-spacing-sm);
+}
+
+.w-full {
+    width: 100%;
+}
+
+.w-4 {
+    width: 1rem;
+}
+
+.h-4 {
+    height: 1rem;
+}
+
+.mr-2 {
+    margin-right: var(--filter-spacing-sm);
+}
+
+.mb-1 {
+    margin-bottom: var(--filter-spacing-xs);
+}
+
+.justify-start {
+    justify-content: flex-start;
+}
+
+.block {
+    display: block;
+}
+
+.text-sm {
+    font-size: var(--filter-font-size-sm);
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+.text-gray-500 {
+    color: var(--filter-muted-foreground);
 }

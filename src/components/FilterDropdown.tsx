@@ -90,11 +90,6 @@ export function FilterDropdown({
                             >
                                 <div>
                                     <div className="filter-dropdown__item-label">{filter.label}</div>
-                                    {filter.category && (
-                                        <div className="filter-dropdown__item-category">
-                                            {filter.category}
-                                        </div>
-                                    )}
                                 </div>
                             </DropdownMenuItem>
                         ))

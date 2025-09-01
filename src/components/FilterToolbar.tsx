@@ -127,7 +127,7 @@ export function FilterToolbar({
                                 <ActiveFilterComponent
                                     key={filter.id}
                                     filter={filter}
-                                    onEdit={() => {/* TODO: Handle edit */ }}
+                                    onEdit={(newValue: unknown) => _onUpdateFilter(filter.id, newValue)}
                                     onRemove={() => memoizedOnRemoveFilter(filter.id)}
                                     autoOpen={lastAddedFilterId === filter.definition.key}
                                     components={components}
@@ -187,7 +187,7 @@ export function FilterToolbar({
                                                         <div key={filter.id} className="filter-sheet__filter-item">
                                                             <ActiveFilterComponent
                                                                 filter={filter}
-                                                                onEdit={() => {/* TODO: Handle edit */ }}
+                                                                onEdit={(newValue: unknown) => _onUpdateFilter(filter.id, newValue)}
                                                                 onRemove={() => memoizedOnRemoveFilter(filter.id)}
                                                                 autoOpen={lastAddedFilterId === filter.definition.key}
                                                                 fullWidth={true}
