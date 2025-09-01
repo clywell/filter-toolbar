@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import type { FilterChipProps } from '../core/types';
 import { Button, Badge } from './ui/basic';
 import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';

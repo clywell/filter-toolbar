@@ -24,8 +24,8 @@ export function Popover({ children, open: controlledOpen, onOpenChange }: Popove
         <div className="filter-popover" data-open={isOpen}>
             {React.Children.map(children, child => {
                 if (React.isValidElement(child)) {
-                    return React.cloneElement(child, {
-                        ...(child.props as any),
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    return React.cloneElement(child as any, {
                         isOpen,
                         onOpenChange: handleOpenChange
                     });
@@ -49,8 +49,8 @@ export function PopoverTrigger({ children, asChild, isOpen, onOpenChange }: Popo
     };
 
     if (asChild && React.isValidElement(children)) {
-        return React.cloneElement(children, {
-            ...(children.props as any),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return React.cloneElement(children as any, {
             onClick: handleClick
         });
     }
@@ -82,8 +82,9 @@ export function PopoverContent({
     const contentRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (contentRef.current && !contentRef.current.contains(event.target as Node)) {
+        const handleClickOutside = (event: globalThis.MouseEvent) => {
+            const target = event.target as globalThis.Node | null;
+            if (contentRef.current && target && !contentRef.current.contains(target)) {
                 onOpenChange?.(false);
             }
         };

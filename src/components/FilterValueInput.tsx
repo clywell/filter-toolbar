@@ -1,4 +1,3 @@
-import React from 'react';
 import type { FilterValueInputProps } from '../core/types';
 import { Button, Input } from './ui/basic';
 
@@ -6,7 +5,6 @@ export function FilterValueInput({
     filter,
     value,
     onChange,
-    lookupFunction,
     components = {}
 }: FilterValueInputProps) {
     // Use provided components or defaults
