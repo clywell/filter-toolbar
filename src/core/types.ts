@@ -263,6 +263,7 @@ export interface FilterChipProps {
     compact?: boolean;
     fullWidth?: boolean;
     autoOpen?: boolean;
+    isMobile?: boolean;
     // Component customization
     components?: {
         Button?: React.ComponentType<ButtonProps>;
@@ -270,6 +271,11 @@ export interface FilterChipProps {
         Popover?: React.ComponentType<PopoverProps>;
         PopoverContent?: React.ComponentType<PopoverContentProps>;
         PopoverTrigger?: React.ComponentType<PopoverTriggerProps>;
+        Sheet?: React.ComponentType<SheetProps>;
+        SheetContent?: React.ComponentType<SheetContentProps>;
+        SheetHeader?: React.ComponentType<SheetHeaderProps>;
+        SheetTitle?: React.ComponentType<SheetTitleProps>;
+        SheetTrigger?: React.ComponentType<SheetTriggerProps>;
     };
 }
 

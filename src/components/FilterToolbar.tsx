@@ -20,20 +20,41 @@ const useIsMobile = () => {
 
 // Default Sheet components - users should override these
 const DefaultSheet: React.FC<{ open: boolean; onOpenChange: (open: boolean) => void; children: React.ReactNode }> =
-    ({ open, children, onOpenChange: _onOpenChange }) => {
-        if (!open) return null;
-        return (
-            <div className="filter-sheet-overlay">
-                <div className="filter-sheet">
-                    {children}
-                </div>
-            </div>
-        );
+    ({ children }) => {
+        return <>{children}</>;
     };
 
-const DefaultSheetContent: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
-    <div className={`filter-sheet__content ${className || ''}`}>{children}</div>
-);
+const DefaultSheetContent: React.FC<{ children: React.ReactNode; className?: string; isOpen?: boolean; onOpenChange?: (open: boolean) => void }> = ({ children, className, isOpen, onOpenChange }) => {
+    if (!isOpen) return null;
+
+    // Add backdrop click handler and escape key handler
+    React.useEffect(() => {
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onOpenChange?.(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+            // Prevent body scroll when modal is open
+            document.body.style.overflow = 'hidden';
+
+            return () => {
+                document.removeEventListener('keydown', handleEscape);
+                document.body.style.overflow = '';
+            };
+        }
+    }, [isOpen, onOpenChange]);
+
+    return (
+        <div className="filter-sheet-overlay" onClick={() => onOpenChange?.(false)}>
+            <div className={`filter-sheet ${className || ''}`} onClick={(e) => e.stopPropagation()}>
+                {children}
+            </div>
+        </div>
+    );
+};
 
 const DefaultSheetHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className }) => (
     <div className={`filter-sheet__header ${className || ''}`}>{children}</div>
@@ -43,9 +64,25 @@ const DefaultSheetTitle: React.FC<{ children: React.ReactNode }> = ({ children }
     <h3 className="filter-sheet__title">{children}</h3>
 );
 
-const DefaultSheetTrigger: React.FC<{ asChild?: boolean; children: React.ReactNode }> = ({ children }) => (
-    <>{children}</>
-);
+const DefaultSheetTrigger: React.FC<{ asChild?: boolean; children: React.ReactNode; onClick?: () => void }> = ({ children, onClick, asChild }) => {
+    if (asChild && React.isValidElement(children)) {
+        // Clone the child element and add onClick handler
+        return React.cloneElement(children as any, {
+            onClick: (e: React.MouseEvent) => {
+                // Call the original onClick if it exists
+                const originalOnClick = (children as any).props.onClick;
+                if (originalOnClick) {
+                    originalOnClick(e);
+                }
+                // Call our onClick
+                if (onClick) {
+                    onClick();
+                }
+            }
+        });
+    }
+    return <button onClick={onClick}>{children}</button>;
+};
 
 export function FilterToolbar({
     availableFilters,
@@ -65,6 +102,9 @@ export function FilterToolbar({
 
     const defaultIsMobile = useIsMobile();
     const isMobile = providedIsMobile ?? defaultIsMobile;
+
+    // For testing - force mobile view
+    // const isMobile = true;
 
     // Use provided components or defaults
     const Sheet = components.Sheet || DefaultSheet;
@@ -130,7 +170,15 @@ export function FilterToolbar({
                                     onEdit={(newValue: unknown) => _onUpdateFilter(filter.id, newValue)}
                                     onRemove={() => memoizedOnRemoveFilter(filter.id)}
                                     autoOpen={lastAddedFilterId === filter.definition.key}
-                                    components={components}
+                                    isMobile={isMobile}
+                                    components={{
+                                        ...components,
+                                        Sheet,
+                                        SheetContent,
+                                        SheetHeader,
+                                        SheetTitle,
+                                        SheetTrigger
+                                    }}
                                 />
                             ))}
                         </div>
@@ -138,72 +186,78 @@ export function FilterToolbar({
                 </div>
             ) : (
                 // Mobile View - Sheet-based filters
-                <div>
-                    <Sheet open={isMobileSheetOpen} onOpenChange={setIsMobileSheetOpen}>
-                        <SheetTrigger asChild>
-                            <ButtonComponent
-                                variant="secondary"
-                                size="sm"
-                                className="filter-toolbar__mobile-trigger"
-                            >
-                                Filters {hasActiveFilters && `(${activeFilters.length})`}
-                            </ButtonComponent>
-                        </SheetTrigger>
-                        <SheetContent className="filter-sheet__mobile">
-                            <div className="filter-sheet__content">
-                                <SheetHeader className="filter-sheet__header">
-                                    <SheetTitle>Filters</SheetTitle>
-                                </SheetHeader>
+                <Sheet open={isMobileSheetOpen} onOpenChange={setIsMobileSheetOpen}>
+                    <SheetTrigger asChild onClick={() => setIsMobileSheetOpen(true)}>
+                        <ButtonComponent
+                            variant="secondary"
+                            size="sm"
+                            className="filter-toolbar__mobile-trigger"
+                        >
+                            Filters {hasActiveFilters && `(${activeFilters.length})`}
+                        </ButtonComponent>
+                    </SheetTrigger>
+                    <SheetContent className="filter-sheet__mobile" isOpen={isMobileSheetOpen} onOpenChange={setIsMobileSheetOpen}>
+                        <div className="filter-sheet__content">
+                            <SheetHeader className="filter-sheet__header">
+                                <SheetTitle>Filters</SheetTitle>
+                            </SheetHeader>
 
-                                <div className="filter-sheet__body">
-                                    <div className="filter-sheet__sections">
-                                        {/* Add Filter Section */}
-                                        <div>
-                                            <h4 className="filter-sheet__section-title">Add Filter</h4>
-                                            <FilterDropdown
-                                                availableFilters={availableFilters}
-                                                activeFilters={activeFilters}
-                                                onAddFilter={handleAddFilter}
-                                                components={components}
-                                            />
-                                        </div>
-
-                                        {/* Active Filters Section */}
-                                        {hasActiveFilters && (
-                                            <div>
-                                                <div className="filter-sheet__section-header">
-                                                    <h4 className="filter-sheet__section-title">Active Filters ({activeFilters.length})</h4>
-                                                    <ButtonComponent
-                                                        variant="ghost"
-                                                        size="sm"
-                                                        onClick={onClearAll}
-                                                        className="filter-toolbar__clear-all"
-                                                    >
-                                                        Clear All
-                                                    </ButtonComponent>
-                                                </div>
-                                                <div className="filter-sheet__active-filters">
-                                                    {activeFilters.map((filter) => (
-                                                        <div key={filter.id} className="filter-sheet__filter-item">
-                                                            <ActiveFilterComponent
-                                                                filter={filter}
-                                                                onEdit={(newValue: unknown) => _onUpdateFilter(filter.id, newValue)}
-                                                                onRemove={() => memoizedOnRemoveFilter(filter.id)}
-                                                                autoOpen={lastAddedFilterId === filter.definition.key}
-                                                                fullWidth={true}
-                                                                components={components}
-                                                            />
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
+                            <div className="filter-sheet__body">
+                                <div className="filter-sheet__sections">
+                                    {/* Add Filter Section */}
+                                    <div>
+                                        <h4 className="filter-sheet__section-title">Add Filter</h4>
+                                        <FilterDropdown
+                                            availableFilters={availableFilters}
+                                            activeFilters={activeFilters}
+                                            onAddFilter={handleAddFilter}
+                                            components={components}
+                                        />
                                     </div>
+
+                                    {/* Active Filters Section */}
+                                    {hasActiveFilters && (
+                                        <div>
+                                            <div className="filter-sheet__section-header">
+                                                <h4 className="filter-sheet__section-title">Active Filters ({activeFilters.length})</h4>
+                                                <ButtonComponent
+                                                    variant="ghost"
+                                                    size="sm"
+                                                    onClick={onClearAll}
+                                                    className="filter-toolbar__clear-all"
+                                                >
+                                                    Clear All
+                                                </ButtonComponent>
+                                            </div>
+                                            <div className="filter-sheet__active-filters">
+                                                {activeFilters.map((filter) => (
+                                                    <div key={filter.id} className="filter-sheet__filter-item">
+                                                        <ActiveFilterComponent
+                                                            filter={filter}
+                                                            onEdit={(newValue: unknown) => _onUpdateFilter(filter.id, newValue)}
+                                                            onRemove={() => memoizedOnRemoveFilter(filter.id)}
+                                                            autoOpen={lastAddedFilterId === filter.definition.key}
+                                                            fullWidth={true}
+                                                            isMobile={isMobile}
+                                                            components={{
+                                                                ...components,
+                                                                Sheet,
+                                                                SheetContent,
+                                                                SheetHeader,
+                                                                SheetTitle,
+                                                                SheetTrigger
+                                                            }}
+                                                        />
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
-                        </SheetContent>
-                    </Sheet>
-                </div>
+                        </div>
+                    </SheetContent>
+                </Sheet>
             )}
         </div>
     );

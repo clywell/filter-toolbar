@@ -11,11 +11,14 @@ const DefaultDropdownMenuTrigger: React.FC<{ asChild?: boolean; children: React.
     <>{children}</>
 );
 
-const DefaultDropdownMenuContent: React.FC<{ children: React.ReactNode; align?: string }> = ({ children }) => (
-    <div className="filter-dropdown__content">
-        {children}
-    </div>
-);
+const DefaultDropdownMenuContent: React.FC<{ children: React.ReactNode; align?: string; isOpen?: boolean }> = ({ children, isOpen }) => {
+    if (!isOpen) return null;
+    return (
+        <div className="filter-dropdown__content">
+            {children}
+        </div>
+    );
+};
 
 const DefaultDropdownMenuItem: React.FC<{ children: React.ReactNode; onClick?: () => void }> = ({ children, onClick }) => (
     <button
@@ -33,6 +36,22 @@ export function FilterDropdown({
     components = {}
 }: FilterDropdownProps) {
     const [isOpen, setIsOpen] = React.useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+    // Close dropdown when clicking outside
+    React.useEffect(() => {
+        const handleClickOutside = (event: globalThis.MouseEvent) => {
+            const target = event.target as globalThis.Node | null;
+            if (dropdownRef.current && target && !dropdownRef.current.contains(target)) {
+                setIsOpen(false);
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }
+    }, [isOpen]);
 
     // Use provided components or defaults
     const DropdownMenu = components.DropdownMenu || DefaultDropdownMenu;
@@ -47,34 +66,34 @@ export function FilterDropdown({
     );
 
     return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <ButtonComponent
-                    variant="secondary"
-                    size="sm"
-                    className="filter-button--add-filter"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    <span>Add Filter</span>
-                    <svg
-                        className="filter-dropdown__icon"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        style={{ height: '0.75rem', width: '0.75rem' }}
+        <div ref={dropdownRef}>
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <ButtonComponent
+                        variant="secondary"
+                        size="sm"
+                        className="filter-button--add-filter"
+                        onClick={() => setIsOpen(!isOpen)}
                     >
-                        <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 9l-7 7-7-7"
-                        />
-                    </svg>
-                </ButtonComponent>
-            </DropdownMenuTrigger>
+                        <span>Add Filter</span>
+                        <svg
+                            className="filter-dropdown__icon"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            style={{ height: '0.75rem', width: '0.75rem' }}
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M19 9l-7 7-7-7"
+                            />
+                        </svg>
+                    </ButtonComponent>
+                </DropdownMenuTrigger>
 
-            {isOpen && (
-                <DropdownMenuContent align="start">
+                <DropdownMenuContent align="start" isOpen={isOpen}>
                     {availableToAdd.length === 0 ? (
                         <div className="filter-dropdown__empty">
                             No filters available
@@ -95,7 +114,7 @@ export function FilterDropdown({
                         ))
                     )}
                 </DropdownMenuContent>
-            )}
-        </DropdownMenu>
+            </DropdownMenu>
+        </div>
     );
 }

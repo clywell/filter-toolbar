@@ -150,27 +150,38 @@ export function buildQueryFromFilters(filters: ActiveFilter[]): FilterQuery {
             // Special handling for different filter types
             switch (filter.definition.type) {
                 case 'date-range':
-                    // For date ranges, set fromDate and toDate keys
+                    // Return an object with from and to properties
                     if (filter.value) {
                         const dateRange = filter.value as DateRangeValue;
+                        const rangeValue: { from?: string; to?: string } = {};
                         if (dateRange.from) {
-                            query.fromDate = formatDateOnly(dateRange.from);
+                            rangeValue.from = formatDateOnly(dateRange.from);
                         }
                         if (dateRange.to) {
-                            query.toDate = formatDateOnly(dateRange.to);
+                            rangeValue.to = formatDateOnly(dateRange.to);
+                        }
+                        // Only set the key if we have at least one value
+                        if (Object.keys(rangeValue).length > 0) {
+                            query[key] = rangeValue;
                         }
                     }
-                    return; // Don't set the main key
+                    return;
 
                 case 'number-range':
                     const numberRange = filter.value as NumberRangeValue;
+                    // Return an object with min and max properties
+                    const rangeValue: { min?: number; max?: number } = {};
                     if (numberRange.min !== undefined) {
-                        query[`${key}_min`] = numberRange.min;
+                        rangeValue.min = numberRange.min;
                     }
                     if (numberRange.max !== undefined) {
-                        query[`${key}_max`] = numberRange.max;
+                        rangeValue.max = numberRange.max;
                     }
-                    return; // Don't set the main key
+                    // Only set the key if we have at least one value
+                    if (Object.keys(rangeValue).length > 0) {
+                        query[key] = rangeValue;
+                    }
+                    return;
 
                 case 'date':
                     if (filter.value) {
