@@ -29,7 +29,7 @@ const DefaultSheetContent: React.FC<{ children: React.ReactNode; className?: str
 
     // Add backdrop click handler and escape key handler
     React.useEffect(() => {
-        const handleEscape = (e: KeyboardEvent) => {
+        const handleEscape = (e: globalThis.KeyboardEvent) => {
             if (e.key === 'Escape') {
                 onOpenChange?.(false);
             }
@@ -67,10 +67,10 @@ const DefaultSheetTitle: React.FC<{ children: React.ReactNode }> = ({ children }
 const DefaultSheetTrigger: React.FC<{ asChild?: boolean; children: React.ReactNode; onClick?: () => void }> = ({ children, onClick, asChild }) => {
     if (asChild && React.isValidElement(children)) {
         // Clone the child element and add onClick handler
-        return React.cloneElement(children as any, {
+        return React.cloneElement(children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>, {
             onClick: (e: React.MouseEvent) => {
                 // Call the original onClick if it exists
-                const originalOnClick = (children as any).props.onClick;
+                const originalOnClick = (children as React.ReactElement<{ onClick?: (e: React.MouseEvent) => void }>).props.onClick;
                 if (originalOnClick) {
                     originalOnClick(e);
                 }
