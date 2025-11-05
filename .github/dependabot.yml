@@ -1,0 +1,54 @@
+version: 2
+updates:
+  # Enable version updates for npm dependencies
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "03:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "clywell"
+    assignees:
+      - "clywell"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps):"
+      include: "scope"
+    pull-request-branch-name:
+      separator: "/"
+    rebase-strategy: "auto"
+    # Group dependency updates for better organization
+    groups:
+      patch-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "patch"
+      minor-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "minor"
+      major-dependencies:
+        dependency-type: "production"
+        update-types:
+          - "major"
+      dev-dependencies:
+        dependency-type: "development"
+  
+  # Also check the example projects
+  - package-ecosystem: "npm"
+    directory: "/examples/basic"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "automated"
+      - "examples"
+    commit-message:
+      prefix: "chore(examples/basic):"

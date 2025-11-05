@@ -308,6 +308,7 @@ export interface FilterDropdownProps {
     // Component customization
     components?: {
         Button?: React.ComponentType<ButtonProps>;
+        Input?: React.ComponentType<InputProps>;
         DropdownMenu?: React.ComponentType<DropdownMenuProps>;
         DropdownMenuContent?: React.ComponentType<DropdownMenuContentProps>;
         DropdownMenuItem?: React.ComponentType<DropdownMenuItemProps>;

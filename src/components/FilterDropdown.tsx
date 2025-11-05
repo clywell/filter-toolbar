@@ -1,6 +1,6 @@
 import React from 'react';
 import type { FilterDropdownProps } from '../core/types';
-import { Button } from './ui/basic';
+import { Button, Input } from './ui/basic';
 
 // Default dropdown components - users should override these
 const DefaultDropdownMenu: React.FC<{ children: React.ReactNode }> = ({ children }) => (
@@ -36,7 +36,16 @@ export function FilterDropdown({
     components = {}
 }: FilterDropdownProps) {
     const [isOpen, setIsOpen] = React.useState(false);
+    const [searchQuery, setSearchQuery] = React.useState('');
     const dropdownRef = React.useRef<HTMLDivElement>(null);
+    const searchInputRef = React.useRef<HTMLInputElement>(null);
+
+    // Focus search input when dropdown opens
+    React.useEffect(() => {
+        if (isOpen && searchInputRef.current) {
+            searchInputRef.current.focus();
+        }
+    }, [isOpen]);
 
     // Close dropdown when clicking outside
     React.useEffect(() => {
@@ -53,17 +62,35 @@ export function FilterDropdown({
         }
     }, [isOpen]);
 
+    // Handle keyboard navigation
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Escape') {
+            setIsOpen(false);
+            setSearchQuery('');
+        }
+    };
+
     // Use provided components or defaults
     const DropdownMenu = components.DropdownMenu || DefaultDropdownMenu;
     const DropdownMenuTrigger = components.DropdownMenuTrigger || DefaultDropdownMenuTrigger;
     const DropdownMenuContent = components.DropdownMenuContent || DefaultDropdownMenuContent;
     const DropdownMenuItem = components.DropdownMenuItem || DefaultDropdownMenuItem;
     const ButtonComponent = components.Button || Button;
+    const InputComponent = components.Input || Input;
 
     // Get filters that aren't already active
     const availableToAdd = availableFilters.filter(
         filter => !activeFilters.find(active => active.definition.key === filter.key)
     );
+
+    // Filter based on search query
+    const filteredFilters = availableToAdd.filter((filter) => {
+        const query = searchQuery.toLowerCase();
+        return (
+            filter.label.toLowerCase().includes(query) ||
+            filter.key.toLowerCase().includes(query)
+        );
+    });
 
     return (
         <div ref={dropdownRef}>
@@ -73,7 +100,10 @@ export function FilterDropdown({
                         variant="secondary"
                         size="sm"
                         className="filter-button--add-filter"
-                        onClick={() => setIsOpen(!isOpen)}
+                        onClick={() => {
+                            setIsOpen(!isOpen);
+                            setSearchQuery('');
+                        }}
                     >
                         <span>Add Filter</span>
                         <svg
@@ -94,25 +124,45 @@ export function FilterDropdown({
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="start" isOpen={isOpen}>
-                    {availableToAdd.length === 0 ? (
-                        <div className="filter-dropdown__empty">
-                            No filters available
+                    {availableToAdd.length > 3 && (
+                        <div className="filter-dropdown__search-container">
+                            <InputComponent
+                                ref={searchInputRef}
+                                type="text"
+                                placeholder="Search filters..."
+                                value={searchQuery}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleKeyDown}
+                                className="filter-dropdown__search-input"
+                            />
                         </div>
-                    ) : (
-                        availableToAdd.map((filter) => (
-                            <DropdownMenuItem
-                                key={filter.key}
-                                onClick={() => {
-                                    onAddFilter(filter);
-                                    setIsOpen(false);
-                                }}
-                            >
-                                <div>
-                                    <div className="filter-dropdown__item-label">{filter.label}</div>
-                                </div>
-                            </DropdownMenuItem>
-                        ))
                     )}
+
+                    <div className="filter-dropdown__items-container">
+                        {filteredFilters.length === 0 ? (
+                            <div className="filter-dropdown__empty">
+                                {availableToAdd.length === 0 ? 'No filters available' : 'No matching filters'}
+                            </div>
+                        ) : (
+                            filteredFilters.map((filter) => (
+                                <DropdownMenuItem
+                                    key={filter.key}
+                                    onClick={() => {
+                                        onAddFilter(filter);
+                                        setIsOpen(false);
+                                        setSearchQuery('');
+                                    }}
+                                >
+                                    <div>
+                                        <div className="filter-dropdown__item-label">{filter.label}</div>
+                                        {filter.category && (
+                                            <div className="filter-dropdown__item-category">{filter.category}</div>
+                                        )}
+                                    </div>
+                                </DropdownMenuItem>
+                            ))
+                        )}
+                    </div>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>

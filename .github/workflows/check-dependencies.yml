@@ -1,0 +1,94 @@
+name: Check for Outdated Dependencies
+
+on:
+  schedule:
+    # Run every Monday at 2 AM UTC
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      auto_merge:
+        description: 'Auto-merge minor and patch updates'
+        required: false
+        default: 'false'
+
+jobs:
+  check-dependencies:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Check for outdated packages
+        id: outdated
+        run: |
+          echo "=== Checking Root Dependencies ==="
+          npm outdated || true
+          
+          echo ""
+          echo "=== Checking Examples/Basic Dependencies ==="
+          cd examples/basic && npm outdated || true
+          cd ../..
+
+      - name: Create detailed report
+        id: report
+        run: |
+          {
+            echo "## 📦 Dependency Status Report"
+            echo ""
+            echo "### Root Dependencies"
+            echo "\`\`\`"
+            npm outdated 2>/dev/null || echo "All dependencies are up to date ✨"
+            echo "\`\`\`"
+            echo ""
+            echo "### Examples/Basic Dependencies"
+            echo "\`\`\`"
+            cd examples/basic && npm outdated 2>/dev/null || echo "All dependencies are up to date ✨"
+            cd ../..
+            echo "\`\`\`"
+          } >> report.md
+
+      - name: Upload report as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dependency-report
+          path: report.md
+          retention-days: 30
+
+      - name: Comment on recent PRs (if outdated packages found)
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('report.md', 'utf8');
+            
+            // Get recent PRs
+            const prs = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              sort: 'created',
+              direction: 'desc',
+              per_page: 5
+            });
+            
+            // Comment on the most recent PR if it exists
+            if (prs.data.length > 0) {
+              const pr = prs.data[0];
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                body: `⚠️ **Outdated Dependencies Detected**\n\n${report}`
+              });
+            }

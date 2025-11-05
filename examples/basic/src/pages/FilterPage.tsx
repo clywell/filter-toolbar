@@ -28,6 +28,11 @@ function FilterPage() {
                 { value: 'Sales', label: 'Sales' },
                 { value: 'HR', label: 'HR' },
                 { value: 'Security', label: 'Security' },
+                { value: 'Operations', label: 'Operations' },
+                { value: 'Finance', label: 'Finance' },
+                { value: 'Legal', label: 'Legal' },
+                { value: 'Product', label: 'Product' },
+                { value: 'Support', label: 'Support' },
             ],
         },
         {

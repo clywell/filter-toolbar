@@ -1,5 +1,6 @@
 import type { FilterValueInputProps } from '../core/types';
 import { Button, Input } from './ui/basic';
+import React from 'react';
 
 export function FilterValueInput({
     filter,
@@ -7,6 +8,8 @@ export function FilterValueInput({
     onChange,
     components = {}
 }: FilterValueInputProps) {
+    const [searchQuery, setSearchQuery] = React.useState('');
+
     // Use provided components or defaults
     const InputComponent = components.Input || Input;
     const ButtonComponent = components.Button || Button;
@@ -39,49 +42,102 @@ export function FilterValueInput({
             );
 
         case 'select':
+            const filteredSelectOptions = (filter.definition.options || []).filter((option) => {
+                const query = searchQuery.toLowerCase();
+                return option.label.toLowerCase().includes(query) ||
+                    option.value.toString().toLowerCase().includes(query);
+            });
+
             return (
-                <div className="filter-select">
-                    {filter.definition.options?.map((option) => (
-                        <ButtonComponent
-                            key={option.value}
-                            variant={value === option.value ? 'default' : 'ghost'}
-                            size="sm"
-                            onClick={() => handleChange(option.value)}
-                            className="w-full justify-start mb-1"
-                            disabled={option.disabled}
-                        >
-                            {option.label}
-                        </ButtonComponent>
-                    ))}
+                <div className="filter-select-container">
+                    {filter.definition.options && filter.definition.options.length > 5 && (
+                        <div className="filter-select__search">
+                            <InputComponent
+                                type="text"
+                                placeholder="Search options..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="filter-select__search-input"
+                            />
+                        </div>
+                    )}
+                    <div className="filter-select">
+                        {filteredSelectOptions.length === 0 ? (
+                            <div className="filter-select__empty">
+                                No matching options
+                            </div>
+                        ) : (
+                            filteredSelectOptions.map((option) => (
+                                <ButtonComponent
+                                    key={option.value}
+                                    variant={value === option.value ? 'default' : 'ghost'}
+                                    size="sm"
+                                    onClick={() => {
+                                        handleChange(option.value);
+                                        setSearchQuery('');
+                                    }}
+                                    className="w-full justify-start mb-1"
+                                    disabled={option.disabled}
+                                >
+                                    {option.label}
+                                </ButtonComponent>
+                            ))
+                        )}
+                    </div>
                 </div>
             );
 
         case 'multi-select':
             const selectedValues = Array.isArray(value) ? value : [];
+            const filteredMultiOptions = (filter.definition.options || []).filter((option) => {
+                const query = searchQuery.toLowerCase();
+                return option.label.toLowerCase().includes(query) ||
+                    option.value.toString().toLowerCase().includes(query);
+            });
+
             return (
-                <div className="filter-multi-select">
-                    {filter.definition.options?.map((option) => (
-                        <ButtonComponent
-                            key={option.value}
-                            variant={selectedValues.includes(option.value) ? 'default' : 'ghost'}
-                            size="sm"
-                            onClick={() => {
-                                const newValues = selectedValues.includes(option.value)
-                                    ? selectedValues.filter(v => v !== option.value)
-                                    : [...selectedValues, option.value];
-                                handleChange(newValues);
-                            }}
-                            className="w-full justify-start mb-1"
-                            disabled={option.disabled}
-                        >
-                            {selectedValues.includes(option.value) && (
-                                <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                </svg>
-                            )}
-                            {option.label}
-                        </ButtonComponent>
-                    ))}
+                <div className="filter-multi-select-container">
+                    {filter.definition.options && filter.definition.options.length > 5 && (
+                        <div className="filter-multi-select__search">
+                            <InputComponent
+                                type="text"
+                                placeholder="Search options..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="filter-multi-select__search-input"
+                            />
+                        </div>
+                    )}
+                    <div className="filter-multi-select">
+                        {filteredMultiOptions.length === 0 ? (
+                            <div className="filter-multi-select__empty">
+                                No matching options
+                            </div>
+                        ) : (
+                            filteredMultiOptions.map((option) => (
+                                <ButtonComponent
+                                    key={option.value}
+                                    variant={selectedValues.includes(option.value) ? 'default' : 'ghost'}
+                                    size="sm"
+                                    onClick={() => {
+                                        const newValues = selectedValues.includes(option.value)
+                                            ? selectedValues.filter(v => v !== option.value)
+                                            : [...selectedValues, option.value];
+                                        handleChange(newValues);
+                                    }}
+                                    className="w-full justify-start mb-1"
+                                    disabled={option.disabled}
+                                >
+                                    {selectedValues.includes(option.value) && (
+                                        <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                        </svg>
+                                    )}
+                                    {option.label}
+                                </ButtonComponent>
+                            ))
+                        )}
+                    </div>
                 </div>
             );
 
