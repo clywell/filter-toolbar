@@ -35,7 +35,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/clywell/filter-toolbar.git"
+    "url": "git+https://github.com/clywell/filter-toolbar.git"
   },
   "bugs": {
     "url": "https://github.com/clywell/filter-toolbar/issues"
