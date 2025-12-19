@@ -19,6 +19,7 @@ jobs:
       pull-requests: write
       issues: write
       deployments: write
+      id-token: write
     
     steps:
     - name: Checkout code
@@ -84,8 +85,6 @@ jobs:
         
     - name: Publish to NPM
       run: npm publish --access public
-      env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         
     - name: Create deployment status
       if: success()
